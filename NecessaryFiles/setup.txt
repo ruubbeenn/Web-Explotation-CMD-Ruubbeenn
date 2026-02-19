@@ -118,7 +118,7 @@ def CreateFilesTXT():
         
     try:
         # downloads
-        for i in tqdm(range(1)):
+        for i in tqdm(range(1), desc=f"🚀 Downloading File"):
             os.system(comando)
         time.sleep(0.25)
         print("\n" + Fore.CYAN + f"{namearchivo}.txt Downloaded succesfully!")
@@ -194,3 +194,7 @@ for i in links:
         print("\n" + "=" * 60)
         print(Fore.GREEN + f"DOWNLOADING {i}.txt\n")
         CreateFilesTXT()
+        
+print(Fore.YELLOW + f"\nAll files downloaded succesfully!")
+print(input(Fore.GREEN + f"Press any button to continue with the program."))
+os.system("clear")
