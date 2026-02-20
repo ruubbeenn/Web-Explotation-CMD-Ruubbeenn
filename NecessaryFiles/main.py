@@ -7,6 +7,13 @@ import requests
 import subprocess
 from colorama import init, Fore, Style
 from datetime import datetime
+import hashlib
+
+
+# Paths
+UsersPath = r"./DataInfo/Datos"
+userfile = r"./DataInfo/user.txt"
+
 
 ## =============================
 ##          S T A R T
@@ -69,11 +76,51 @@ def startconsole():
                                                                                     
                 """)
             
+            print("- User: " + Fore.LIGHTGREEN_EX + usernameinput)
             print(Fore.CYAN + "Max pass lenght: 20" + Fore.WHITE + "\n")
-            passinput = input("")
+            
+            ## PASS
+            creatingpass = True
+            while creatingpass: 
+                passinput = input("-> Create your unique password: ")
+                
+                if len(passinput) < 20 and len(passinput) > 0:
+                    # GOOD PASS
+                    os.system("clear")
+                    print("""
+                                                                                        
+,--. ,--. ,---.  ,------.,------.      ,-----. ,-----. ,--.  ,--.,------.,--. ,----.    
+|  | |  |'   .-' |  .---'|  .--. '    '  .--./'  .-.  '|  ,'.|  ||  .---'|  |'  .-./    
+|  | |  |`.  `-. |  `--, |  '--'.'    |  |    |  | |  ||  |' '  ||  `--, |  ||  | .---. 
+'  '-'  '.-'    ||  `---.|  |\  \     '  '--'\'  '-'  '|  | `   ||  |`   |  |'  '--'  | 
+ `-----' `-----' `------'`--' '--'     `-----' `-----' `--'  `--'`--'    `--' `------'  
+                                                                                        
+                          """)
+                    
+                    ## ENCRIPTYING PASS AND USER
+                    saved_user = hashlib.sha256(usernameinput())
+                    saved_password = hashlib.sha256(passinput())
+                    
+                    with open(userfile, "w") as f:
+                        f.write(f"{saved_user}:{saved_password}")
+                    
+                    print(Fore.LIGHTGREEN_EX + "[+] Encrypting and saving user and pass.")
+                    time.sleep(1)
+                    
+                else:
+                    
+                    # BAD PASS
+                    print(Fore.LIGHTRED_EX + f"[!] The pass is {len(usernameinput)} length, max is 20. Try again.\n")
+                    input(Fore.WHITE + "Press any button to continue.")
+                    
         
         else:
-            print(Fore.LIGHTRED_EX + f"[!] The username is {len(usernameinput)}, try again.\n")
+            print(Fore.LIGHTRED_EX + f"[!] The username is {len(usernameinput)} length, max is 15. Try again.\n")
             input(Fore.WHITE + "Press any button to continue.")
-        
-loading()
+
+if os.path.exists(UsersPath):
+    if os.path.exists(userfile):
+        ## LOGIN
+        print("login")
+    else:
+        loading()
