@@ -122,5 +122,6 @@ if os.path.exists(UsersPath):
     if os.path.exists(userfile):
         ## LOGIN
         print("login")
-    else:
-        loading()
+
+else:
+    loading()
