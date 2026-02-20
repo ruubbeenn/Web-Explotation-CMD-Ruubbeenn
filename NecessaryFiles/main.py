@@ -98,8 +98,10 @@ def startconsole():
                           """)
                     
                     ## ENCRIPTYING PASS AND USER
-                    saved_user = hashlib.sha256(usernameinput())
-                    saved_password = hashlib.sha256(passinput())
+                    usr = str(usernameinput)
+                    passwrd = str(passinput)
+                    saved_user = hashlib.sha256(usr())
+                    saved_password = hashlib.sha256(passwrd())
                     
                     with open(userfile, "w") as f:
                         f.write(f"{saved_user}:{saved_password}")
