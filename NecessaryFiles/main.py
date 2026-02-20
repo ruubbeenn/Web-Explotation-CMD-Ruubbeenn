@@ -42,7 +42,5 @@ _____             __        ___  ___   ________
         passinput = input("")
 
 
-enconsola = True
-while enconsola:
-    date = datetime.now().strftime("%H:%M:%S")
-    userinput = input("")
+## START CONSOLE
+startconsole()
