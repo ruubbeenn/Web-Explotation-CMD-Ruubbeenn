@@ -12,6 +12,7 @@ init(autoreset=True)
 DataInfoFolder = r"./DataInfo"
 setup = r"./DataInfo/setup.txt"
 webpaths = r"./DataInfo/WebPaths/"
+status = r"./DataInfo/status.txt"
 
 ## FUNCTIONS
 # ghost
@@ -38,6 +39,34 @@ def startup():
     ghost()
     print("\n\n")
     
+
+# status.txt
+def status_file():
+    print(Fore.LIGHTRED_EX + "status.txt doesn't exist.")
+    
+    try:
+        with open(status, "w") as f:
+            f.write("Not status")
+        
+        print(Fore.MAGENTA + "status.txt Folder created!\n")
+        time.sleep(0.2)
+    
+    except Exception as err:
+        os.system("clear")
+        print(Fore.LIGHTRED_EX + f"An critical internal error has ocurred: {err}")
+        print("\nExiting. . .")
+        sys.exit()
+    
+    except KeyboardInterrupt as err:
+        playerinput = input("Do you want to cancel the download? (y/n): ")
+        
+        if playerinput.lower() == "y" or playerinput.lower() == "yes":
+            print(f"Download canceled")
+        
+        else:
+            os.system("cls")
+            createfile_datainfo()
+    
     
 
 # data info
@@ -52,7 +81,7 @@ def createfile_datainfo():
     
     except Exception as err:
         os.system("clear")
-        print(Fore.RED + f"An critical internal error has ocurred: {err}")
+        print(Fore.LIGHTRED_EX + f"An critical internal error has ocurred: {err}")
         print("\nExiting. . .")
         sys.exit()
     
@@ -74,7 +103,7 @@ def createfile_setup():
     
     except Exception as err:
         os.system("clear")
-        print(Fore.RED + f"An critical internal error has ocurred: {err}")
+        print(Fore.LIGHTRED_EX + f"An critical internal error has ocurred: {err}")
         print("\nExiting. . .")
         sys.exit()
     
@@ -99,7 +128,7 @@ def create_webpathsfolder():
     
     except Exception as err:
         os.system("clear")
-        print(Fore.RED + f"An critical internal error has ocurred: {err}")
+        print(Fore.LIGHTRED_EX + f"An critical internal error has ocurred: {err}")
         print("\nExiting. . .")
         sys.exit()
     
@@ -122,12 +151,12 @@ def CreateFilesTXT():
             os.system(comando)
         time.sleep(0.25)
         print("\n" + Fore.CYAN + f"{namearchivo}.txt Downloaded succesfully!")
-        print("=" * 30 + "\n\n")
+        print("=" * 50 + "\n\n")
 
     # excepts ERROR CRITICO    
     except Exception as err:
         os.system("clear")
-        print(Fore.RED + f"An critical internal error has ocurred: {err}")
+        print(Fore.LIGHTRED_EX + f"An critical internal error has ocurred: {err}")
         print("\nExiting. . .")
         sys.exit()
 
@@ -164,6 +193,9 @@ else:
 if not os.path.exists(webpaths):
     create_webpathsfolder()
     
+if not os.path.exists(status):
+    status_file()
+    
 
 # VARIABLES
 links = {
@@ -191,7 +223,7 @@ for i in links:
         comando = f"wget -q -O{pathdef} {valor}"
         namearchivo = i
         
-        print("\n" + "=" * 60)
+        print("\n" + "=" * 50)
         print(Fore.GREEN + f"DOWNLOADING {i}.txt\n")
         CreateFilesTXT()
         
