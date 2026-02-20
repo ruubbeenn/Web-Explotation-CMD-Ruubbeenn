@@ -37,7 +37,8 @@ def loading():
     texto = linea.split(":", 1)
     version = texto[1]
     
-    print(Fore.LIGHTYELLOW_EX + f"[!] Version: {version}")
+    print(Fore.LIGHTYELLOW_EX + f"[!] Version: {version}\n")
+    input(Fore.WHITE + f"Press any button to start console.")
     
     
 
@@ -66,3 +67,5 @@ _____             __        ___  ___   ________
         
         print(Fore.CYAN + "Max pass lenght: 20" + Fore.WHITE + "\n")
         passinput = input("")
+        
+loading()
