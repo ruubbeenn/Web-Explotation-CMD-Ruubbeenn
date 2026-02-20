@@ -13,14 +13,39 @@ from datetime import datetime
 ## =============================
 
 # check status
-def startconsole():
-    ## borrado
+def loading():
     os.system("clear")
+    
+    print(Fore.WHITE + """
+   __                ___                   
+  / /  ___  ___ ____/ (_)__  ___ _         
+ / /__/ _ \/ _ `/ _  / / _ \/ _ `/   _   _ 
+/____/\___/\_,_/\_,_/_/_//_/\_, (_) (_) (_)
+                           /___/           
+          """)
+    
+    print("[!] Loading console.py\n")
+    time.sleep(0.5)
+    print(Fore.LIGHTGREEN_EX + "[✓] Loaded console.\n")
+    
+    ## LOAD VERSION
+    version = r"./DataInfo/version.txt"
+    with open(version, "r") as f:
+        linea = f.read()
+        linea = linea.strip()
         
+    texto = linea.split(":", 1)
+    version = texto[1]
+    
+    print(Fore.LIGHTYELLOW_EX + f"[!] Version: {version}")
+    
+    
+
+def startconsole():
     # CREATE USER
     print("""
-    _____             __        __  __           
-    / ___/______ ___ _/ /____   / / / /__ ___ ____
+      _____             __        __  __           
+     / ___/______ ___ _/ /____   / / / /__ ___ ____
     / /__/ __/ -_) _ `/ __/ -_) / /_/ (_-</ -_) __/
     \___/_/  \__/\_,_/\__/\__/  \____/___/\__/_/   
                                                 
@@ -41,7 +66,3 @@ _____             __        ___  ___   ________
         
         print(Fore.CYAN + "Max pass lenght: 20" + Fore.WHITE + "\n")
         passinput = input("")
-
-
-## START CONSOLE
-startconsole()
