@@ -14,7 +14,8 @@ from datetime import datetime
 
 # check status
 def startconsole():
-    print("A")
+    ## borrado
+    os.system("clear")
         
     # CREATE USER
     print("""
