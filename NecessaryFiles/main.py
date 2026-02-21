@@ -8,16 +8,271 @@ import subprocess
 from colorama import init, Fore, Style
 from datetime import datetime
 import hashlib
+import bcrypt
+import readline
 
 
-# Paths
-UsersPath = r"./DataInfo/Datos"
+## DICIONARIES
+LoginOptions = {
+    "1": "Login in a user.",
+    "2": "Register a new user.",
+    "3": "Exit."
+}
+
+Commands = {
+    "help": {
+        "PathMapper": "Searchs hidden paths on a web, such as /index.html, /admin.html.",
+        "exit": "Exits the program. (Easy no?)",
+    }
+
+
+}
+
+
+## Paths
+UsersPath = r"./DataInfo/Users"
 userfile = r"./DataInfo/user.txt"
+setuppyfolder = r"./setup.py"
+MainDirectory = r"./"
+
+
+## BOOLEANS
+creatinguser = False
+creatingpass = False
+onconsole = False
+LoginIn = False
+readbeforebool = False
+loggedinauser = False
 
 
 ## =============================
 ##          S T A R T
 ## =============================
+
+
+## START CONSOLE IF THERE ARE USERS
+def startconsole():
+    onconsole = True
+    while onconsole:
+        os.system("clear")
+        print("""
+  (`\ .-') /`   ('-. .-. .-')           ('-.  ) (`-.       _ (`-.                                  .-') _    
+   `.( OO ),' _(  OO)\  ( OO )        _(  OO)  ( OO ).    ( (OO  )                                (  OO) )   
+,--./  .--.  (,------.;-----.\       (,------.(_/.  \_)-._.`     \ ,--.      .-'),-----.   ,-.-') /     '._  
+|      |  |   |  .---'| .-.  |        |  .---' \  `.'  /(__...--'' |  |.-') ( OO'  .-.  '  |  |OO)|'--...__) 
+|  |   |  |,  |  |    | '-' /_)       |  |      \     /\ |  /  | | |  | OO )/   |  | |  |  |  |  \'--.  .--' 
+|  |.'.|  |_)(|  '--. | .-. `.       (|  '--.    \   \ | |  |_.' | |  |`-' |\_) |  |\|  |  |  |(_/   |  |    
+|         |   |  .--' | |  \  |       |  .--'   .'    \_)|  .___.'(|  '---.'  \ |  | |  | ,|  |_.'   |  |    
+|   ,'.   |   |  `---.| '--'  /       |  `---. /  .'.  \ |  |      |      |    `'  '-'  '(_|  |      |  |    
+'--'   '--'   `------'`------'        `------''--'   '--'`--'      `------'      `-----'   `--'      `--'    
+\n""")
+    
+        print(Fore.LIGHTYELLOW_EX + f"\t  ACTIONS:\n" + Fore.WHITE)
+
+        numcolors = 1
+        # Options
+        print("=" * 30)
+        for i in LoginOptions:
+            if numcolors == 1:
+                print("[" + str(i) + "] " + Fore.LIGHTGREEN_EX + LoginOptions[i] + "\n")
+
+            elif numcolors == 2:
+                print("[" + str(i) + "] " + Fore.LIGHTBLUE_EX + LoginOptions[i] + "\n")
+                
+            elif numcolors == 3:
+                print("[" + str(i) + "] " + Fore.LIGHTRED_EX + LoginOptions[i])
+
+            print(Fore.WHITE, end=(""))
+            numcolors += 1
+
+        print("=" * 30)
+            
+        UserLoginAction = input("\nWhat do you want to do: ")
+
+        # Check if parameter is valid
+        if UserLoginAction.isdigit():
+            # VALID!
+            print("ES VALIDO!")
+
+            ## Check if parameter in diccionary
+            if UserLoginAction in LoginOptions:
+                ## IT IS ON DICIONARY
+
+                # LOGIN IN A USER
+                if LoginOptions[UserLoginAction] == "Login in a user.":
+                    onconsole = True
+                    login()
+
+                if LoginOptions[UserLoginAction] == "Register a new user.":
+                    CreateNewUser()
+
+                if LoginOptions[UserLoginAction] == "Exit.":
+                    os.system("clear")
+                    print(Fore.LIGHTGREEN_EX + "[+] Data Saved.\n")
+                    print(Fore.LIGHTYELLOW_EX + "[?] Thanks for using Web Explotation by Rubennn. See you soon!\n")
+                    input(Fore.WHITE + "Press Enter to exit.")
+                    os.system("clear")
+                    sys.exit()
+
+            else:
+                ## IT IS NOT IN DICIONARY
+                os.system("clear")
+                print(Fore.LIGHTRED_EX + f"[!] You have entered a wrong parameter.\n")
+                print(Fore.LIGHTYELLOW_EX + f"[?] Your parameter: {UserLoginAction}\n")
+                input(Fore.WHITE + f"Press enter to continue.")
+
+
+
+
+        else:
+            # NO VALID!
+            os.system("clear")
+            print(Fore.LIGHTRED_EX + f"[!] You must enter a valid parameter.\n")
+            print(Fore.LIGHTYELLOW_EX + f"[?] Your parameter: {UserLoginAction}\n")
+            input(Fore.WHITE + f"Press enter to continue.")
+
+     
+## LOGIN IN A USER
+def login():
+    LoginIn = True
+    
+    ## LOGIN
+    while LoginIn:
+        os.system("clear")
+        print("""
+  (`\ .-') /`   ('-. .-. .-')           ('-.  ) (`-.       _ (`-.                                  .-') _    
+   `.( OO ),' _(  OO)\  ( OO )        _(  OO)  ( OO ).    ( (OO  )                                (  OO) )   
+,--./  .--.  (,------.;-----.\       (,------.(_/.  \_)-._.`     \ ,--.      .-'),-----.   ,-.-') /     '._  
+|      |  |   |  .---'| .-.  |        |  .---' \  `.'  /(__...--'' |  |.-') ( OO'  .-.  '  |  |OO)|'--...__) 
+|  |   |  |,  |  |    | '-' /_)       |  |      \     /\ |  /  | | |  | OO )/   |  | |  |  |  |  \'--.  .--' 
+|  |.'.|  |_)(|  '--. | .-. `.       (|  '--.    \   \ | |  |_.' | |  |`-' |\_) |  |\|  |  |  |(_/   |  |    
+|         |   |  .--' | |  \  |       |  .--'   .'    \_)|  .___.'(|  '---.'  \ |  | |  | ,|  |_.'   |  |    
+|   ,'.   |   |  `---.| '--'  /       |  `---. /  .'.  \ |  |      |      |    `'  '-'  '(_|  |      |  |    
+'--'   '--'   `------'`------'        `------''--'   '--'`--'      `------'      `-----'   `--'      `--'    
+\n""")
+        ## SELECT USER
+        userselected = input("> User: " + Fore.LIGHTGREEN_EX)
+        seepath = r"./DataInfo/Users/" + userselected
+
+        # CHECK IF USERSELECTED IS NOT EMPTY.
+        if not userselected == "":
+            
+            if os.path.exists(seepath):
+                ## PASS
+                passSelected = input(Fore.WHITE + "> Password: " + Fore.LIGHTGREEN_EX)
+
+                PassPathCheck = seepath + f"/pass.txt"
+                if os.path.exists(PassPathCheck):
+
+                    ## READ HASHED PASS
+                    with open(PassPathCheck, "r") as f:
+                        hashedpass = f.read().strip()
+
+                    ## CHECK PASS
+                    if bcrypt.checkpw(passSelected.encode("utf-8"), hashedpass.encode("utf-8")):
+                        
+                        # RIGHT PASS
+                        os.system("clear")
+                        print(Fore.LIGHTGREEN_EX + f"[+] Logged in on {userselected}!\n" + Fore.WHITE)
+                        input("Press Enter to begin.")
+                        LoginIn = False
+                        readbefore(userselected)
+                   
+                    else:
+                        # WRONG PASS
+                        os.system("clear")
+                        print(Fore.LIGHTRED_EX + """
+  (`\ .-') /`   ('-. .-. .-')           ('-.  ) (`-.       _ (`-.                                  .-') _    
+   `.( OO ),' _(  OO)\  ( OO )        _(  OO)  ( OO ).    ( (OO  )                                (  OO) )   
+,--./  .--.  (,------.;-----.\       (,------.(_/.  \_)-._.`     \ ,--.      .-'),-----.   ,-.-') /     '._  
+|      |  |   |  .---'| .-.  |        |  .---' \  `.'  /(__...--'' |  |.-') ( OO'  .-.  '  |  |OO)|'--...__) 
+|  |   |  |,  |  |    | '-' /_)       |  |      \     /\ |  /  | | |  | OO )/   |  | |  |  |  |  \'--.  .--' 
+|  |.'.|  |_)(|  '--. | .-. `.       (|  '--.    \   \ | |  |_.' | |  |`-' |\_) |  |\|  |  |  |(_/   |  |    
+|         |   |  .--' | |  \  |       |  .--'   .'    \_)|  .___.'(|  '---.'  \ |  | |  | ,|  |_.'   |  |    
+|   ,'.   |   |  `---.| '--'  /       |  `---. /  .'.  \ |  |      |      |    `'  '-'  '(_|  |      |  |    
+'--'   '--'   `------'`------'        `------''--'   '--'`--'      `------'      `-----'   `--'      `--'    
+\n""")
+                        print(Fore.RED + "[!] Wrong password.\n")
+                        input(Fore.WHITE + f"Press Enter to return.")
+
+                            
+                else:
+                    # FILE DISSAPEARED & REMOVED
+                    os.system("clear")
+                    print(Fore.LIGHTRED_EX + f"[!] Internal error has occurred.\n")
+                    print(f"[?] You " + Fore.LIGHTYELLOW_EX + " must " + Fore.WHITE + "solve it to continue.\n")
+                    SolveAction = input(Fore.WHITE + f"Do you want to solve it? (y/n): ")
+
+                    if SolveAction.lower() == "y" or SolveAction.lower() == "yes":
+                        os.system("clear")
+                        os.system("python3 setup.py")
+                    
+                    else:
+                        os.system("clear")
+                        print(Fore.LIGHTRED_EX + "[!] Exiting.\n")
+                        time.sleep(1)
+                        os.system("clear")
+                        sys.exit()
+
+            
+            else:
+                # NO VALID! | DOESN'T EXIST
+                os.system("clear")
+                print(Fore.LIGHTRED_EX + f"[!] You have entered a wrong username.\n")
+                print(Fore.LIGHTYELLOW_EX + f"[?] Your parameter: {userselected}\n")
+                input(Fore.WHITE + f"Press enter to continue.")
+        
+        else:
+            ## EMPTY PARAMETER
+            os.system("clear")
+            print(Fore.LIGHTRED_EX + f"[!] You haven't entered a parameter.\n")
+            print(Fore.LIGHTYELLOW_EX + f"[?] Returning.\n")
+            input(Fore.WHITE + f"Press enter to continue.")
+                
+
+        
+        
+## SUCCESFULLY LOGGED IN
+def readbefore(user):
+    readbeforebool = True
+    while readbeforebool:
+        os.system("clear")
+        print(Fore.LIGHTYELLOW_EX + f"[INFO]:" + Fore.WHITE + " Welcome " + Fore.GREEN + f"{user}" + Fore.WHITE + ", you've successfully logged in our service. Before continuing, we " + Fore.LIGHTGREEN_EX + "recommend reading " + Fore.WHITE + "this to clarify any questions you may have. With our " + Fore.LIGHTRED_EX + "exploit" + Fore.WHITE + ", you can use various functions, such as scanning hidden web paths, checking the status of websites, and many more!")
+
+        print(f"\n- To get started, we " + Fore.LIGHTGREEN_EX + "recommend " + Fore.WHITE + "using the " + Fore.LIGHTCYAN_EX + "<help> " + Fore.WHITE + "command to " + Fore.LIGHTGREEN_EX + "learn " + Fore.WHITE + "about the commands.")
+
+        print(f"\n- If you don't know how a command works, use " + Fore.LIGHTCYAN_EX + "<command> “--help”" + Fore.WHITE + ", which will show you more detailed information about the command.\n\n")
+
+        time.sleep(3)
+        readed = input(Fore.LIGHTYELLOW_EX + f"Have you read everything? (y/n): " + Fore.WHITE)
+
+
+        if readed.lower() == "y" or readed.lower() == "yes":
+            ## START CONSOLE
+            LoggedIn(user)
+            time.sleep(10)
+
+        else:
+            os.system("clear")
+            print(Fore.LIGHTRED_EX + f"[!] Please read everything before starting the console.\n")
+
+            input(Fore.WHITE + f"Press Enter to return.")
+
+
+## SUCCESFULLY LOGGED IN
+def LoggedIn(user):
+    loggedinauser = True
+    
+    ## CONSOLE LOOP
+    while loggedinauser:
+        os.system("clear")
+
+        ## PRINT USER AND TIME
+        print(Fore.LIGHTCYAN_EX + "[" + datetime.now().strftime("%H:%M") + "] " + Fore.WHITE + "|" + Fore.LIGHTGREEN_EX + f" {user}" + Fore.WHITE + "> ", end=(""))
+        action = input(Fore.LIGHTYELLOW_EX + "")
+
+
+
 
 # check status
 def loading():
@@ -46,48 +301,85 @@ def loading():
     
     print(Fore.LIGHTYELLOW_EX + f"[!] Version: {version}\n")
     input(Fore.WHITE + f"Press any button to start console.")
-    startconsole()
     
-    
+    ## CHECK IF THERE IS ANY USER CREATED
+    if os.listdir(UsersPath):
+        ## USER EXIST
+        startconsole()
 
-def startconsole():
+    else:
+        ## NO USER EXIST
+        CreateNewUser()
+
+
+
+def CreateNewUser():
     creatinguser = True
+
     while creatinguser:
     # CREATE USER
+    
         os.system("clear")
         print("""
-      _____             __        __  __           
-     / ___/______ ___ _/ /____   / / / /__ ___ ____
-    / /__/ __/ -_) _ `/ __/ -_) / /_/ (_-</ -_) __/
-    \___/_/  \__/\_,_/\__/\__/  \____/___/\__/_/   
-                                                
+           _  .-')     ('-.   ('-.     .-') _     ('-.                       .-')      ('-.  _  .-')   
+          ( \( -O )  _(  OO) ( OO ).-.(  OO) )  _(  OO)                     ( OO ).  _(  OO)( \( -O )  
+   .-----. ,------. (,------./ . --. //     '._(,------.       ,--. ,--.   (_)---\_)(,------.,------.  
+  '  .--./ |   /`. ' |  .---'| \-.  \ |'--...__)|  .---'       |  | |  |   /    _ |  |  .---'|   /`. ' 
+  |  |('-. |  /  | | |  |  .-'-'  |  |'--.  .--'|  |           |  | | .-') \  :` `.  |  |    |  /  | | 
+ /_) |OO  )|  |_.' |(|  '--.\| |_.'  |   |  |  (|  '--.        |  |_|( OO ) '..`''.)(|  '--. |  |_.' | 
+ ||  |`-'| |  .  '.' |  .--' |  .-.  |   |  |   |  .--'        |  | | `-' /.-._)   \ |  .--' |  .  '.' 
+(_'  '--'\ |  |\  \  |  `---.|  | |  |   |  |   |  `---.      ('  '-'(_.-' \       / |  `---.|  |\  \  
+   `-----' `--' '--' `------'`--' `--'   `--'   `------'        `-----'     `-----'  `------'`--' '--'                                         
         """)
         print(Fore.CYAN + "Max Length: 15" + Fore.WHITE + "\n")
         usernameinput = input("-> Create your unique username: ")
         userlen = len(usernameinput)
-        if userlen < 15 and userlen > 0:
-            ## CREATE PASS
+
+        ## CHECK IF ANOTHER USER EXISTS
+        checkpath = r"./DataInfo/Users/" + usernameinput
+        if os.path.exists(checkpath):
             os.system("clear")
-            print("""
-    _____             __        ___  ___   ________
-    / ___/______ ___ _/ /____   / _ \/ _ | / __/ __/
-    / /__/ __/ -_) _ `/ __/ -_) / ___/ __ |_\ \_\ \  
-    \___/_/  \__/\_,_/\__/\__/ /_/  /_/ |_/___/___/  
-                                                                                    
-                """)
+            print(Fore.LIGHTRED_EX + "[!] User already exists.\n")
+            print(Fore.LIGHTYELLOW_EX + "[?] Choose another username to continue.\n")
+            input(Fore.WHITE + "Press anywhere to continue.")
+        
+        else:
+        
+        ## CHECK USER LENGHT
+            if userlen < 15 and userlen > 0:
             
-            print("- User: " + Fore.LIGHTGREEN_EX + usernameinput)
-            print(Fore.CYAN + "Max pass lenght: 20" + Fore.WHITE + "\n")
-            
-            ## PASS
-            creatingpass = True
-            while creatingpass: 
-                passinput = input("-> Create your unique password: ")
-                
-                if len(passinput) < 20 and len(passinput) > 0:
-                    # GOOD PASS
+                ## CREATE PASS
+                # user false
+                creatinguser = False
+
+                # pass true
+                creatingpass = True
+
+                while creatingpass:
                     os.system("clear")
                     print("""
+           _  .-')     ('-.   ('-.     .-') _     ('-.           _ (`-.    ('-.      .-')     .-')    
+          ( \( -O )  _(  OO) ( OO ).-.(  OO) )  _(  OO)         ( (OO  )  ( OO ).-. ( OO ).  ( OO ).  
+   .-----. ,------. (,------./ . --. //     '._(,------.       _.`     \  / . --. /(_)---\_)(_)---\_) 
+  '  .--./ |   /`. ' |  .---'| \-.  \ |'--...__)|  .---'      (__...--''  | \-.  \ /    _ | /    _ |  
+  |  |('-. |  /  | | |  |  .-'-'  |  |'--.  .--'|  |           |  /  | |.-'-'  |  |\  :` `. \  :` `.  
+ /_) |OO  )|  |_.' |(|  '--.\| |_.'  |   |  |  (|  '--.        |  |_.' | \| |_.'  | '..`''.) '..`''.) 
+ ||  |`-'| |  .  '.' |  .--' |  .-.  |   |  |   |  .--'        |  .___.'  |  .-.  |.-._)   \.-._)   \ 
+(_'  '--'\ |  |\  \  |  `---.|  | |  |   |  |   |  `---.       |  |       |  | |  |\       /\       / 
+   `-----' `--' '--' `------'`--' `--'   `--'   `------'       `--'       `--' `--' `-----'  `-----'                                                                   
+                """)
+            
+                    print("- User: " + Fore.LIGHTGREEN_EX + usernameinput)
+                    print(Fore.CYAN + "Max pass lenght: 20" + Fore.WHITE + "\n")
+                
+                    ## INPUT PASS
+                    passinput = input("-> Create your unique password: ")
+                
+                    ## CHECK PASS LENGHT
+                    if len(passinput) < 20 and len(passinput) > 0:
+                        # GOOD PASS
+                        os.system("clear")
+                        print("""
                                                                                         
 ,--. ,--. ,---.  ,------.,------.      ,-----. ,-----. ,--.  ,--.,------.,--. ,----.    
 |  | |  |'   .-' |  .---'|  .--. '    '  .--./'  .-.  '|  ,'.|  ||  .---'|  |'  .-./    
@@ -95,35 +387,72 @@ def startconsole():
 '  '-'  '.-'    ||  `---.|  |\  \     '  '--'\'  '-'  '|  | `   ||  |`   |  |'  '--'  | 
  `-----' `-----' `------'`--' '--'     `-----' `-----' `--'  `--'`--'    `--' `------'  
                                                                                         
+                            """)
+                        
+                        ## ENCRIPTYING PASS AND USER
+                        hashedpass = bcrypt.hashpw(passinput.encode("utf-8"), bcrypt.gensalt())
+
+                        ## SAVE PASS
+                        route = r"./DataInfo/Users/" + usernameinput
+                        os.makedirs(route)
+
+                        passwordtxtpath = route + "/pass.txt"
+
+                        ## CREATE password.txt
+                        with open(passwordtxtpath, "w") as f:
+                            f.write(hashedpass.decode())
+
+                        ## FINISH
+                        os.system("clear")
+                        print("""
+               .-')      ('-.  _  .-')                                     .-') _                                
+              ( OO ).  _(  OO)( \( -O )                                   ( OO ) )                               
+ ,--. ,--.   (_)---\_)(,------.,------.          .-----.  .-'),-----. ,--./ ,--,'    ,------.,-.-')   ,----.     
+ |  | |  |   /    _ |  |  .---'|   /`. '        '  .--./ ( OO'  .-.  '|   \ |  |\ ('-| _.---'|  |OO) '  .-./-')  
+ |  | | .-') \  :` `.  |  |    |  /  | |        |  |('-. /   |  | |  ||    \|  | )(OO|(_\    |  |  \ |  |_( O- ) 
+ |  |_|( OO ) '..`''.)(|  '--. |  |_.' |       /_) |OO  )\_) |  |\|  ||  .     |/ /  |  '--. |  |(_/ |  | .--, \ 
+ |  | | `-' /.-._)   \ |  .--' |  .  '.'       ||  |`-'|   \ |  | |  ||  |\    |  \_)|  .--',|  |_.'(|  | '. (_/ 
+('  '-'(_.-' \       / |  `---.|  |\  \       (_'  '--'\    `'  '-'  '|  | \   |    \|  |_)(_|  |    |  '--'  |  
+  `-----'     `-----'  `------'`--' '--'         `-----'      `-----' `--'  `--'     `--'    `--'     `------'                                                                 
                           """)
+                        print(Fore.LIGHTGREEN_EX + f"[+] User created succesfully!\n" + Fore.WHITE)
+                        input("Press any button to continue.")
+                        creatingpass = False
+                        startconsole()
                     
-                    ## ENCRIPTYING PASS AND USER
-                    usr = str(usernameinput)
-                    passwrd = str(passinput)
-                    saved_user = hashlib.sha256(usr.encode())
-                    saved_password = hashlib.sha256(passwrd.encode())
                     
-                    with open(userfile, "w") as f:
-                        f.write(f"{saved_user}:{saved_password}")
+                  
                     
-                    print(Fore.LIGHTGREEN_EX + "[+] Encrypting and saving user and pass.")
-                    time.sleep(1)
-                    
-                else:
-                    
-                    # BAD PASS
-                    print(Fore.LIGHTRED_EX + f"[!] The pass is {len(usernameinput)} length, max is 20. Try again.\n")
-                    input(Fore.WHITE + "Press any button to continue.")
+                    else: 
+                        # BAD PASS
+                        print(Fore.LIGHTRED_EX + f"[!] The pass is {len(usernameinput)} length, max is 20. Try again.\n")
+                        input(Fore.WHITE + "Press any button to continue.")
                     
         
-        else:
-            print(Fore.LIGHTRED_EX + f"[!] The username is {len(usernameinput)} length, max is 15. Try again.\n")
-            input(Fore.WHITE + "Press any button to continue.")
+            else:
+                print(Fore.LIGHTRED_EX + f"[!] The username is {len(usernameinput)} length, max is 15. Try again.\n")
+                input(Fore.WHITE + "Press any button to continue.")
 
+
+## START CHECK
 if os.path.exists(UsersPath):
-    if os.path.exists(userfile):
-        ## LOGIN
-        print("login")
+    
+    ## load loading.
+    loading()
 
 else:
-    loading()
+    os.system("clear")
+    print(Fore.RED + f"[!] A fatal error has ocurred!\n")
+    print(Fore.WHITE + f"In order to continue you" + Fore.LIGHTYELLOW_EX + " MUST SOLVE IT" + "." + Fore.WHITE)
+    choice = input("\nDo you want to solve it (y/n): ")
+    if choice.lower() == "y" or choice.lower() == "yes":
+        if os.path.exists(setuppyfolder):
+            os.system("clear")
+            os.system("python3 setup.py")
+            
+            
+        else:
+            os.system("clear")
+            print(Fore.RED + f"[!] We can't solve it automatically.\n" + Fore.WHITE)
+            print(Fore.WHITE + f"[?] Relaunch console.py to solve it.\n")
+            sys.exit()
