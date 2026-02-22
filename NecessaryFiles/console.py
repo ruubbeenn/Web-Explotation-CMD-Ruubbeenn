@@ -6,6 +6,7 @@ import requests
 import subprocess
 from colorama import init, Fore, Style
 from datetime import datetime
+import readline
 
 
 ## FILES
@@ -15,7 +16,7 @@ checkfiles = {
     "webpaths": r"./DataInfo/WebPaths",
     "status": r"./DataInfo/status.txt",
     "version": r"./DataInfo/version.txt",
-    "username": r"./DataInfo/Users"
+    "UsersFolder": r"./DataInfo/Users"
 }
 
 
@@ -115,7 +116,7 @@ if linkscorrectos == len(checkfiles):
         
         os.system("clear")
         
-    if lecturastatus == "Ok" and os.path.exists(MainpyPath):
+    if lecturastatus == "Ok":
         
         url = "https://raw.githubusercontent.com/ruubbeenn/Web-Explotation-CMD-Ruubbeenn/refs/heads/main/NecessaryFiles/main.py"
         preguntaservidor = requests.get(url)
