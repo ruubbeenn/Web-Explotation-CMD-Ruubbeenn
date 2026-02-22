@@ -4,6 +4,7 @@ from tqdm import tqdm
 import requests
 from colorama import init, Fore, Style
 import sys
+import readline
 
 
 ## IMPORTANT
