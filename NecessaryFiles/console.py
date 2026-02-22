@@ -8,6 +8,39 @@ from colorama import init, Fore, Style
 from datetime import datetime
 import readline
 
+generalmodules = ["requests", "tqdm", "colorama", "bcrypt", "os", "sys"]
+requiredmodules = []
+
+## CHECK | INSTALL NECESSARY MODULES
+def check_modules():
+    for i in generalmodules:
+        
+        ## SAVE REQUIRED MODULES TO INSTALL LATER
+        try:
+            __import__(i)
+        except ModuleNotFoundError as module:
+            requiredmodules.append(module)
+
+    print(requiredmodules)
+    time.sleep(10)
+
+    if requiredmodules:
+        for i in requiredmodules:
+            print(f"Module {i} not installed\n")
+            print(f"Installing {i}...\n")
+            try:
+                subprocess.check_call([sys.executable, "-m", "pip", "install", i])
+                time.sleep(1)
+            except Exception as err:
+                print(f"Error trying to download {i}: {err}")
+
+    print("fin.")
+    time.sleep(100)
+        
+check_modules()
+        
+
+
 
 ## FILES
 checkfiles = {
@@ -16,7 +49,8 @@ checkfiles = {
     "webpaths": r"./DataInfo/WebPaths",
     "status": r"./DataInfo/status.txt",
     "version": r"./DataInfo/version.txt",
-    "UsersFolder": r"./DataInfo/Users"
+    "UsersFolder": r"./DataInfo/Users",
+    "RequirementsFile": r"./DataInfo/requirements.txt"
 }
 
 
@@ -31,6 +65,7 @@ MainpyPath = r"./main.py"
 def setup_function():
     try:
         os.system("python3 setup.py")
+    
     except Exception as err:
         print(f"An internal error has occurred.")
         print("Exiting. . .")
@@ -94,8 +129,7 @@ for i in checkfiles:
         
         if setupaccion.lower() == "y" or setupaccion.lower() == "yes":
             try:
-                
-                
+
                 os.system("python3 setup.py")
                 break
             except Exception as err:
