@@ -25,15 +25,14 @@ LoginOptions = {
 # commands
 commands = ["help", "pathmapper", "exit"]
 
-## --HELP COMMANDS
-pathmapperhelp = (f"""\n""")
-
 
 
 helpcommand = {
     "help": {
         "PathMapper": "Searchs hidden paths on a web, such as /index.html, /admin.html.",
         "exit": "Exits the program. (Easy no?)",
+        "webstatus": "Show's the status of a web [200, 403. . .]",
+        "clear": "Clear's completely the screen."
     }
 
 }
@@ -57,6 +56,89 @@ savepaths = False
 onlyopenpaths = False
 badusagepathmapper = False
 finishedpathmapper = False
+errorinwebstatus = False
+
+
+## =============================
+##        INFO OF USAGE
+## =============================
+def webstatushelp():
+    os.system("clear")
+    print(f"""
+{Fore.YELLOW}==============================
+         WEB STATUS
+=============================={Fore.WHITE}
+
+Webstatus is a tool that checks the current status of a {Fore.LIGHTGREEN_EX}website{Fore.WHITE}. It sends a request and displays what it receives on screen {Fore.YELLOW}[200, 403, etc.]{Fore.WHITE}.
+
+{Fore.LIGHTYELLOW_EX}[?] INFO{Fore.WHITE}
+
+You can enter {Fore.LIGHTBLUE_EX}https://{Fore.WHITE} or {Fore.LIGHTBLUE_EX}http://{Fore.WHITE} if you want, but keep in mind that you will then have to add {Fore.LIGHTRED_EX}www{Fore.WHITE}.
+
+
+{Fore.YELLOW}[?] EXAMPLE OF USE{Fore.WHITE}
+
+- {Fore.LIGHTBLUE_EX}webstatus exampleweb.com{Fore.WHITE}
+- {Fore.LIGHTBLUE_EX}webstatus www.exampleweb.com{Fore.WHITE}
+- {Fore.LIGHTBLUE_EX}webstatus exampleweb{Fore.WHITE}
+""")
+    
+    input("\nPress Enter to Continue. ")
+    os.system("clear")
+
+def pathmapperinfo(): 
+    os.system("clear")
+    print(f"""
+{Fore.YELLOW}================================
+         PATH MAPPER
+================================{Fore.WHITE}
+
+Pathmapper is a web page port {Fore.LIGHTCYAN_EX}scanning tool{Fore.WHITE} that searches through a list of thousands of different combinations on a website. After scanning, it lists each and every port that exists, both blocked and accessible.
+
+It is {Fore.LIGHTRED_EX}IMPORTANT{Fore.WHITE} to include both the www. format at the beginning and the {Fore.LIGHTRED_EX}attack level{Fore.WHITE} at the end!
+
+
+{Fore.LIGHTYELLOW_EX}[?] FORMAT{Fore.WHITE}
+      
+You {Fore.LIGHTRED_EX}MUST{Fore.WHITE} use the following format:  
+
+- {Fore.LIGHTBLUE_EX}https://www.<web>.<domain> |{Fore.WHITE}
+- {Fore.LIGHTBLUE_EX}www.<web>.<com>{Fore.WHITE}
+
+
+{Fore.LIGHTYELLOW_EX}[?] FLAGS{Fore.WHITE}
+
+There are currently two flags in path mapper, which are as follows:
+
+{Fore.LIGHTBLUE_EX}[-S]{Fore.WHITE} = Saves the attack in a .txt file that you can then view using {Fore.LIGHTGREEN_EX}openfile <file>{Fore.WHITE}.
+
+{Fore.LIGHTBLUE_EX}[-O]{Fore.WHITE} = Only shows ports that are OPEN, i.e., hidden and blocked ports will not be shown.
+
+
+{Fore.LIGHTYELLOW_EX}[?] ATTACK LEVELS{Fore.WHITE}
+
+There are several types of attack levels, which vary according to the number of ports that will be tested in the scan. It is {Fore.LIGHTRED_EX}IMPORTANT{Fore.WHITE} to set the scan level at the end.
+
+{Fore.LIGHTBLUE_EX}[1]{Fore.WHITE} = 4754 Combinations
+{Fore.LIGHTBLUE_EX}[2]{Fore.WHITE} = 20496 Combinations
+{Fore.LIGHTBLUE_EX}[3]{Fore.WHITE} = 37094 Combinations
+{Fore.LIGHTBLUE_EX}[4]{Fore.WHITE} = 128385 Combinations
+
+
+{Fore.LIGHTYELLOW_EX}[?] EXAMPLE OF USE{Fore.WHITE}
+
+There are several ways to use pathmapper. You must enter a minimum of 2 words and a maximum of 5 words.
+
+-> {Fore.LIGHTBLUE_EX}pathmapper www.exampleweb.com 1{Fore.WHITE} = (Basic attack)
+-> {Fore.LIGHTBLUE_EX}pathmapper -S www.exampleweb.com 1{Fore.WHITE} = (Basic attack and save to txt.)
+-> {Fore.LIGHTBLUE_EX}pathmapper -O www.exampleweb.com 2{Fore.WHITE} = (Medium attack and only open ports)
+-> {Fore.LIGHTBLUE_EX}pathmapper -O -S www.exampleweb.com 1{Fore.WHITE} = (Basic attack and both parameters)
+-> {Fore.LIGHTBLUE_EX}pathmapper -O -S www.exampleweb.com 4{Fore.WHITE} = (Maximum level attack, with both parameters)
+
+""")
+    
+    input("Press Enter to continue")
+    os.system("clear")
 
 
 ## =============================
@@ -281,6 +363,7 @@ def LoggedIn(user):
     global badusagepathmapper
     global savepaths
     global onlyopenpaths
+    global errorinwebstatus
 
     loggedinauser = True
     
@@ -296,46 +379,160 @@ def LoggedIn(user):
         if action.lower() != "":
 
             ## HELP COMMAND
-            if action.lower() == "help":
-                lastone = len(commands)
-                lastoneminus = lastone - 1
-                print("\nIf you want to know more about a command, use --help at the end of a command. \n- Example: " + Fore.LIGHTBLUE_EX + "pathmapper --help\n")
-                print(Fore.WHITE + "\nList of commands " + Fore.LIGHTGREEN_EX + "available" + Fore.WHITE + ":\n")
-                
-                for i in range(lastone):
-                    if not i == lastoneminus:
-                        ## NOT THE LAST ONE
-                        print(commands[i] + ",", end=(" "))
+            if separacion[0].lower() == "help":
+                lon = len(separacion)
+                if lon == 1:
+                    lastone = len(commands)
+                    lastoneminus = lastone - 1
+                    print("\nIf you want to know more about a command, use --help at the end of a command. \n- Example: " + Fore.LIGHTBLUE_EX + "pathmapper --help\n")
+                    print(Fore.WHITE + "\nList of commands " + Fore.LIGHTCYAN_EX + "available" + Fore.WHITE + ":\n")
+                    
+                    for i in range(lastone):
+                        if not i == lastoneminus:
+                            ## NOT THE LAST ONE
+                            print(commands[i] + ",", end=(" "))
 
-                    else:
-                        ## THE LAST ONE
-                        print(commands[i] + ".\n")
+                        else:
+                            ## THE LAST ONE
+                            print(commands[i] + ".\n")
+                else:
+                    print(f"{Fore.LIGHTGREEN_EX}Help {Fore.WHITE}bad usage. {Fore.LIGHTGREEN_EX}Help {Fore.WHITE}command only takes 1 parameter [help].") 
 
 
             ## EXIT COMMAND
-            elif action.lower() == "exit":
-                os.system("clear")
-                print(Fore.LIGHTGREEN_EX + "[+] Data Saved.\n")
-                input(Fore.WHITE + f"Press Enter to exit " + Fore.LIGHTYELLOW_EX + f"{user} " + Fore.WHITE + "account.")
-                os.system("clear")
-                startconsole()
+            elif separacion[0].lower() == "exit":
+                lon = len(separacion)
+                if lon == 1:
+                    os.system("clear")
+                    print(Fore.LIGHTGREEN_EX + "[+] Data Saved.\n")
+                    input(Fore.WHITE + f"Press Enter to exit " + Fore.LIGHTYELLOW_EX + f"{user} " + Fore.WHITE + "account.")
+                    os.system("clear")
+                    startconsole()
+                else:
+                    print(f"{Fore.LIGHTRED_EX}Exit {Fore.WHITE}command bad usage. {Fore.LIGHTRED_EX}Only takes 1 parameter [exit].")
+
+
+                                    ## CHECK WEB STATUS
+            elif separacion[0].lower() == "webstatus":
+                lon = len(separacion)
+                
+                if lon == 2:
+                    
+                    if separacion[1] == "--help":
+                        webstatushelp()
+                        continue
+                    webacheckear = separacion[1]
+                    
+                    # confirmate website
+                    if not webacheckear.startswith(("https://", "http://")):
+                        if not webacheckear.endswith(".com"):
+                            if not "www." in webacheckear:
+                                # NO HTTPS \ NO .COM \ NO WWW.
+                                webacheckear = f"https://www.{webacheckear}.com"
+
+                            else:
+                                errorinwebstatus = True
+
+
+                        ## NO HTTPS pero si .com
+                        else:
+                            ## NO HTTPS \ SI.COM
+                            if not "www." in webacheckear:
+
+                                # NO HTTPS \ SI .COM \ NO WWW.
+                                webacheckear = f"https://www.{webacheckear}"
+
+                            else:
+                                ## NO HTTPS \ SI .COM \ SI WWW.
+                                webacheckear = f"https://{webacheckear}"
+
+
+
+                    ## si tiene https://
+                    else:
+
+                        # SI HTTPS \ NO .COM \ NO WWW.
+                        if not webacheckear.endswith(".com"):
+                            if not "www." in webacheckear:
+
+                                errorinwebstatus = True
+                            
+                            else:
+                                # SI HTTPS \ SI WWW. \ SI COM
+                                webacheckear = f"{webacheckear}.com"
+                            
+                        else:
+                            if not "www." in webacheckear:
+                            # SI HTTPS \ NO WWW. \ SI COM
+                                errorinwebstatus = True
+
+                    if not errorinwebstatus:
+                        print(f"""{Fore.LIGHTCYAN_EX}
+==========================
+        WEB STATUS                         
+==========================
+{Fore.WHITE}""")
+
+                        print(Fore.LIGHTYELLOW_EX + f"\n[?] Checking web status of " + Fore.LIGHTGREEN_EX + f"{webacheckear}\n" + Fore.WHITE)
+
+                        ## TRY REQUEST
+                        try:
+                            serverrequest = requests.get(webacheckear)
+                            statuscode = serverrequest.status_code
+
+                            
+                            ## OK REQUEST
+                            if statuscode >= 200 and statuscode < 300:
+                                print(f"{Fore.LIGHTGREEN_EX}-> [✓] {webacheckear}{Fore.WHITE} | {Fore.YELLOW}[{statuscode}] {Fore.WHITE}\n\n")
+
+                            ## REDIRECT REQUESTS
+                            elif statuscode >= 300 and statuscode < 400:
+                                print(f"{Fore.LIGHTCYAN_EX}-> [→] {webacheckear}{Fore.WHITE} | {Fore.YELLOW}[{statuscode}] {Fore.WHITE}\n\n")
+
+                            ## FORBIDEN
+                            elif statuscode >= 400 and statuscode < 500:
+                                print(f"{Fore.LIGHTRED_EX}-> [✗] {webacheckear}{Fore.WHITE} | {Fore.YELLOW}[{statuscode}] {Fore.WHITE}\n\n")
+                            
+                        
+                        except Exception as err:
+                            print(Fore.RED + f"[!] An error has occurred: \n{Fore.WHITE}{err}\n")
+
+                    else:
+                        print(f"Command {separacion[0]} bad usage. Use {Fore.LIGHTCYAN_EX}webstatus --help {Fore.WHITE}for more info!")
+
+
+            ## COMMANDO CLEAR
+            elif separacion[0] == "clear":
+                lon = len(separacion)
+                if lon == 1:
+                    os.system("clear")
+                
+                else:
+                    print(f"\nClear {Fore.LIGHTRED_EX}bad usage{Fore.WHITE}, clear tool only {Fore.LIGHTCYAN_EX}requires{Fore.WHITE} 1 parameter -> [clear]\n ")
 
 
             ## ===========================
             ##        PATH MAPP3R
             ## ===========================
             ## INICIO DEL PATHMAPPER
-            comando = action.split()
-            lon = len(comando)
 
-            if action != "":
+            elif separacion[0] == "pathmapper":
                 try:
+                    lon = len(comando)
+                    comando = action.split()
+
                     if lon <= 5:
-                        if comando[0] == "pathmapper":
                             ## ES EL COMANDO PATHMAPPER
                             ## LEN DE 1 Y 2 | UNVALID
-                            if lon == 1 or lon == 2:
+                            if lon == 1:
                                 badusagepathmapper = True
+                            
+                            elif lon == 2:
+                                if comando[1] == "--help":
+                                    pathmapperinfo()
+                                    continue
+                                else:
+                                    badusagepathmapper = True
 
 
                             ## LEN DE 3
@@ -456,200 +653,200 @@ def LoggedIn(user):
                     badusagepathmapper = True
                     
 
-            if not finishedpathmapper and badusagepathmapper:
-                ## BAD USAGE
-                print(f"pathmapper bad usage. Use " + Fore.LIGHTCYAN_EX + f"pathmapper --help " + Fore.WHITE + "for more info!")
-                finishedpathmapper = False
-                onlyopenpaths = False
-                savepaths = False
+                if not finishedpathmapper and badusagepathmapper == True:
+                    ## BAD USAGE
+                    print(f"pathmapper bad usage. Use " + Fore.LIGHTCYAN_EX + f"pathmapper --help " + Fore.WHITE + "for more info!")
+                    finishedpathmapper = False
+                    onlyopenpaths = False
+                    savepaths = False
 
-                ## GOOD USAGE
-            elif finishedpathmapper:
-                print(f"""
-{Fore.WHITE}===============================
-{Fore.LIGHTCYAN_EX}         PATH MAPPER
-{Fore.WHITE}===============================
-            """)
-                
-                ## PRINT VARIABLES
-                # SAVE AS TXT PRINT
-                if savepaths:
-                    print(f"Save Paths: " + Fore.LIGHTGREEN_EX + "True" + Fore.WHITE)
-                else:
-                    print(f"Save Paths: " + Fore.LIGHTRED_EX + "False" + Fore.WHITE)
+                    ## GOOD USAGE
+                elif finishedpathmapper:
+                    print(f"""
+    {Fore.WHITE}===============================
+    {Fore.LIGHTCYAN_EX}         PATH MAPPER
+    {Fore.WHITE}===============================
+                """)
+                    
+                    ## PRINT VARIABLES
+                    # SAVE AS TXT PRINT
+                    if savepaths:
+                        print(f"Save Paths: " + Fore.LIGHTGREEN_EX + "True" + Fore.WHITE)
+                    else:
+                        print(f"Save Paths: " + Fore.LIGHTRED_EX + "False" + Fore.WHITE)
 
-                # ONLY OPEN PATH PRINT
-                if onlyopenpaths:
-                    print(f"Only Open Pahts: " + Fore.LIGHTGREEN_EX + "True" + Fore.WHITE)
-                else:
-                    print(f"Only Open Pahts: " + Fore.LIGHTRED_EX + "False" + Fore.WHITE)
+                    # ONLY OPEN PATH PRINT
+                    if onlyopenpaths:
+                        print(f"Only Open Pahts: " + Fore.LIGHTGREEN_EX + "True" + Fore.WHITE)
+                    else:
+                        print(f"Only Open Pahts: " + Fore.LIGHTRED_EX + "False" + Fore.WHITE)
 
-                # Web
-                print(f"Website: " + Fore.LIGHTGREEN_EX + f"{savedweb}" + Fore.WHITE)
+                    # Web
+                    print(f"Website: " + Fore.LIGHTGREEN_EX + f"{savedweb}" + Fore.WHITE)
 
-                # Number of attack | File to use
-                print(f"Level of attack: " + Fore.LIGHTGREEN_EX + f"{levelofattack} " + Fore.WHITE + "|" + Fore.LIGHTCYAN_EX + f" {FileToUseMapper}" + Fore.WHITE)
+                    # Number of attack | File to use
+                    print(f"Level of attack: " + Fore.LIGHTGREEN_EX + f"{levelofattack} " + Fore.WHITE + "|" + Fore.LIGHTCYAN_EX + f" {FileToUseMapper}" + Fore.WHITE)
 
-                
-                # CONFIRMATIO
-                confirmation = input("\nAre you sure? (y/n): ")
+                    
+                    # CONFIRMATIO
+                    confirmation = input("\nAre you sure? (y/n): ")
 
-                if confirmation.lower() == "y" or confirmation.lower() == "yes":
-                    os.system("clear")
-                    print(Fore.LIGHTRED_EX + """
-===============================
-    INITIATING ATTACK
-===============================
-            """ + Fore.WHITE)
+                    if confirmation.lower() == "y" or confirmation.lower() == "yes":
+                        os.system("clear")
+                        print(Fore.LIGHTRED_EX + """
+    ===============================
+        INITIATING ATTACK
+    ===============================
+                """ + Fore.WHITE)
 
-                    ## PATHS TO OPEN
-                    PathMapperPathToOpen = r"./DataInfo/WebPaths/" + FileToUseMapper
+                        ## PATHS TO OPEN
+                        PathMapperPathToOpen = r"./DataInfo/WebPaths/" + FileToUseMapper
 
-                    # CHECK FILE
-                    if os.path.exists(PathMapperPathToOpen):
+                        # CHECK FILE
+                        if os.path.exists(PathMapperPathToOpen):
 
-                        ## OPEN FILE
-                        with open(PathMapperPathToOpen, "r") as f:
-                            lineas = f.read().splitlines()
+                            ## OPEN FILE
+                            with open(PathMapperPathToOpen, "r") as f:
+                                lineas = f.read().splitlines()
 
-                        ## CORRECT WEB
-                        if not savedweb.startswith(("http://", "https://")):
-                            finalweb = "https://" + savedweb
-                        else:
-                            finalweb = savedweb
-
-                        finalweb = finalweb.rstrip("/")
-
-                        ## SAVED WEBS
-                        functionalwebs = []
-
-
-                        ## CHECK WEBS FUNCTION
-                        session = requests.Session()
-
-                        def check_url(url):
-                            try:
-                                r = session.get(url, timeout=1.5, allow_redirects=False)
-
-                                # Solo existe si responde 200
-                                if r.status_code == 200:
-                                    return (url, "ok")
-
-                                # Opcional: si quieres ver paths que existen pero no tienes acceso
-                                elif r.status_code in [401, 403]:
-                                    return (url, "forbidden")
-
-                            except:
-                                pass
-
-                            # Todo lo demás: ignorar
-                            return None
-                        
-                        ## SAVED WEBS
-                        results = {}
-
-                        ## REVISAR HILOS Y ENVIAR MENSAJES  
-                        max_hilos = 175
-
-                        with ThreadPoolExecutor(max_workers=max_hilos) as executor:
-                            envios = [
-                                executor.submit(check_url, f"{finalweb}/{i.strip()}")
-                                for i in lineas
-                            ]
-
-                            ## PROGRESSION BAR
-                            for envio in tqdm(as_completed(envios), total=len(envios)):
-                                resultado = envio.result()
-
-                                if resultado:
-                                    url, status = resultado
-                                    results[url] = status
-
-                            ## COMPLETED
-                            print(Fore.LIGHTYELLOW_EX + "\n[?] Attack completed\n" + Fore.WHITE)
-
-                            # Si no se encontró nada
-                            if not results:
-                                print(Fore.LIGHTRED_EX + "[!] No hidden path has been found!\n" + Fore.WHITE)
-
+                            ## CORRECT WEB
+                            if not savedweb.startswith(("http://", "https://")):
+                                finalweb = "https://" + savedweb
                             else:
-                                # Mostrar resultados según onlyopenpaths
-                                ## OK
-                                for url, status in results.items():
+                                finalweb = savedweb
 
-                                    if onlyopenpaths and status != "ok":
-                                        continue
+                            finalweb = finalweb.rstrip("/")
 
-                                    if status == "ok":
-                                        print(Fore.LIGHTGREEN_EX + "[✓] " + url + Fore.WHITE)
+                            ## SAVED WEBS
+                            functionalwebs = []
 
-                                ## REDIRECT
-                                for url, status in results.items():
-                                    if onlyopenpaths and status != "ok":
-                                        continue
 
-                                    if status == "redirect":
-                                        print(Fore.LIGHTBLUE_EX + "[→] " + url + Fore.WHITE)
+                            ## CHECK WEBS FUNCTION
+                            session = requests.Session()
 
-                                ## FORBIDDEN
-                                for url, status in results.items():
-                                    if onlyopenpaths and status != "ok":
-                                        continue
-                                    
-                                    if status == "forbidden":
-                                        print(Fore.LIGHTRED_EX + "[403] " + url + Fore.WHITE)
+                            def check_url(url):
+                                try:
+                                    r = session.get(url, timeout=1.5, allow_redirects=False)
 
-                                # Guardar ataque si corresponde
-                                if savepaths:
-                                    route = r"./DataInfo/Users/rubennn/PathMapperAttacks"
-                                    numberofattacks = route + r"/numberofattacks.txt"
+                                    # Solo existe si responde 200
+                                    if r.status_code == 200:
+                                        return (url, "ok")
 
-                                    # Crear carpeta si no existe
-                                    if not os.path.exists(route):
-                                        os.makedirs(route)
+                                    # Opcional: si quieres ver paths que existen pero no tienes acceso
+                                    elif r.status_code in [401, 403]:
+                                        return (url, "forbidden")
 
-                                    # Crear o actualizar contador
-                                    if not os.path.exists(numberofattacks):
-                                        with open(numberofattacks, "w") as f:
-                                            f.write("1")
-                                        linea = "1"
-                                    else:
-                                        with open(numberofattacks, "r") as f:
-                                            linea = f.read().strip()
+                                except:
+                                    pass
 
-                                        linea = int(linea) + 1
+                                # Todo lo demás: ignorar
+                                return None
+                            
+                            ## SAVED WEBS
+                            results = {}
 
-                                        with open(numberofattacks, "w") as f:
-                                            f.write(str(linea))
+                            ## REVISAR HILOS Y ENVIAR MENSAJES  
+                            max_hilos = 175
 
-                                    # Crear archivo del ataque
-                                    attackfilemade = f"attack-{linea}.txt"
-                                    attackmade = f"{route}/{attackfilemade}"
+                            with ThreadPoolExecutor(max_workers=max_hilos) as executor:
+                                envios = [
+                                    executor.submit(check_url, f"{finalweb}/{i.strip()}")
+                                    for i in lineas
+                                ]
 
-                                    # Guardar resultados
-                                    with open(attackmade, "w") as f:
-                                        for url, status in results.items():
-                                            if onlyopenpaths and status != "ok":
-                                                continue
-                                            f.write(f"{url} | {status}\n")
+                                ## PROGRESSION BAR
+                                for envio in tqdm(as_completed(envios), total=len(envios)):
+                                    resultado = envio.result()
 
-                                    print(Fore.LIGHTBLUE_EX + f"\n[?] Attack saved on {attackfilemade}!\n" + Fore.WHITE)
-                                    print(Fore.WHITE + "[?] Enter the command " + Fore.LIGHTGREEN_EX + "openfile <file> " + Fore.WHITE + "to see the file.\n")
+                                    if resultado:
+                                        url, status = resultado
+                                        results[url] = status
+
+                                ## COMPLETED
+                                print(Fore.LIGHTYELLOW_EX + "\n[?] Attack completed\n" + Fore.WHITE)
+
+                                # Si no se encontró nada
+                                if not results:
+                                    print(Fore.LIGHTRED_EX + "[!] No hidden path has been found!\n" + Fore.WHITE)
+
+                                else:
+                                    # Mostrar resultados según onlyopenpaths
+                                    ## OK
+                                    for url, status in results.items():
+
+                                        if onlyopenpaths and status != "ok":
+                                            continue
+
+                                        if status == "ok":
+                                            print(Fore.LIGHTGREEN_EX + "[✓] " + url + Fore.WHITE)
+
+                                    ## REDIRECT
+                                    for url, status in results.items():
+                                        if onlyopenpaths and status != "ok":
+                                            continue
+
+                                        if status == "redirect":
+                                            print(Fore.LIGHTBLUE_EX + "[→] " + url + Fore.WHITE)
+
+                                    ## FORBIDDEN
+                                    for url, status in results.items():
+                                        if onlyopenpaths and status != "ok":
+                                            continue
+                                        
+                                        if status == "forbidden":
+                                            print(Fore.LIGHTRED_EX + "[403] " + url + Fore.WHITE)
+
+                                    # Guardar ataque si corresponde
+                                    if savepaths:
+                                        route = r"./DataInfo/Users/rubennn/PathMapperAttacks"
+                                        numberofattacks = route + r"/numberofattacks.txt"
+
+                                        # Crear carpeta si no existe
+                                        if not os.path.exists(route):
+                                            os.makedirs(route)
+
+                                        # Crear o actualizar contador
+                                        if not os.path.exists(numberofattacks):
+                                            with open(numberofattacks, "w") as f:
+                                                f.write("1")
+                                            linea = "1"
+                                        else:
+                                            with open(numberofattacks, "r") as f:
+                                                linea = f.read().strip()
+
+                                            linea = int(linea) + 1
+
+                                            with open(numberofattacks, "w") as f:
+                                                f.write(str(linea))
+
+                                        # Crear archivo del ataque
+                                        attackfilemade = f"attack-{linea}.txt"
+                                        attackmade = f"{route}/{attackfilemade}"
+
+                                        # Guardar resultados
+                                        with open(attackmade, "w") as f:
+                                            for url, status in results.items():
+                                                if onlyopenpaths and status != "ok":
+                                                    continue
+                                                f.write(f"{url} | {status}\n")
+
+                                        print(Fore.LIGHTBLUE_EX + f"\n[?] Attack saved on {attackfilemade}!\n" + Fore.WHITE)
+                                        print(Fore.WHITE + "[?] Enter the command " + Fore.LIGHTGREEN_EX + "openfile <file> " + Fore.WHITE + "to see the file.\n")
+
+                                
+
+
+
+
 
                             
+                    else:
+                        print(Fore.LIGHTRED_EX + f"\n[!] Attack canceled\n")
 
-
-
-
-
+                    print("\n")
                         
-                else:
-                    print(Fore.LIGHTRED_EX + f"\n[!] Attack canceled\n")
-
-                print("\n")
-                    
-        else:
-            print(f"Command {action} not found.")
+            else:
+                print(f"Command {Fore.LIGHTRED_EX}{action}{Fore.WHITE} not found.\n")
 
                         
 
