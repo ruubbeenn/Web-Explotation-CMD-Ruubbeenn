@@ -23,7 +23,7 @@ LoginOptions = {
 }
 
 # commands
-commands = ["help", "pathmapper", "exit"]
+commands = ["help", "pathmapper", "exit", "clear"]
 
 
 
@@ -387,6 +387,7 @@ def LoggedIn(user):
                     print("\nIf you want to know more about a command, use --help at the end of a command. \n- Example: " + Fore.LIGHTBLUE_EX + "pathmapper --help\n")
                     print(Fore.WHITE + "\nList of commands " + Fore.LIGHTCYAN_EX + "available" + Fore.WHITE + ":\n")
                     
+                    ## LISTA PEQUEÑA
                     for i in range(lastone):
                         if not i == lastoneminus:
                             ## NOT THE LAST ONE
@@ -395,6 +396,18 @@ def LoggedIn(user):
                         else:
                             ## THE LAST ONE
                             print(commands[i] + ".\n")
+
+                    print(f"""{Fore.YELLOW}
+=========================
+      Advanced Info             
+========================={Fore.WHITE}
+""")
+                    ## LISTA ENORME
+                    for command, usage in helpcommand["help"].items():
+                        print(f"{Fore.LIGHTYELLOW_EX}[{command}]{Fore.WHITE} = {usage}")
+
+                    print("\n")
+
                 else:
                     print(f"{Fore.LIGHTGREEN_EX}Help {Fore.WHITE}bad usage. {Fore.LIGHTGREEN_EX}Help {Fore.WHITE}command only takes 1 parameter [help].") 
 
