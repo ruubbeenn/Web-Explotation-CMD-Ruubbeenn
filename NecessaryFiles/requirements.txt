@@ -1,0 +1,13 @@
+## REQUIREMENTS
+tqdm
+time
+os
+sys
+request
+subprocess
+colorama
+datetime
+hashlib
+bcrypt
+readline
+getpass
