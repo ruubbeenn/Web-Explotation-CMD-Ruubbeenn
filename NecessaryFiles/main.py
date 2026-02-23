@@ -559,7 +559,7 @@ def LoggedIn(user):
                             print(f"{Fore.LIGHTRED_EX}{attackfilename}{Fore.WHITE} file doesn't exist!\n")
 
                     else:
-                        print(f"\n{Fore.LIGHTRED_EX}{separacion[1]}{Fore.WHITE} is not a .txt file!\n")
+                        print(f"{Fore.LIGHTRED_EX}{separacion[1]}{Fore.WHITE} is not a .txt file!\n")
 
             ## ===========================
             ##      SHOW ALL ATTACKS
