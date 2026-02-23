@@ -110,7 +110,7 @@ You {Fore.LIGHTRED_EX}MUST{Fore.WHITE} use the following format:
 
 There are currently two flags in path mapper, which are as follows:
 
-{Fore.LIGHTBLUE_EX}[-S]{Fore.WHITE} = Saves the attack in a .txt file that you can then view using {Fore.LIGHTGREEN_EX}openfile <file>{Fore.WHITE}.
+{Fore.LIGHTBLUE_EX}[-S]{Fore.WHITE} = Saves the attack in a .txt file that you can then view using {Fore.LIGHTGREEN_EX}showattack <file>{Fore.WHITE}.
 
 {Fore.LIGHTBLUE_EX}[-O]{Fore.WHITE} = Only shows ports that are OPEN, i.e., hidden and blocked ports will not be shown.
 
@@ -232,6 +232,8 @@ def startconsole():
 def login():
     LoginIn = True
     
+    global actualuser
+    
     ## LOGIN
     while LoginIn:
         os.system("clear")
@@ -249,6 +251,10 @@ def login():
         ## SELECT USER
         userselected = input("> User: " + Fore.LIGHTGREEN_EX)
         seepath = r"./DataInfo/Users/" + userselected
+
+        def checkuserselected():
+            user = userselected
+            return user
 
         # CHECK IF USERSELECTED IS NOT EMPTY.
         if not userselected == "":
@@ -272,6 +278,7 @@ def login():
                         print(Fore.LIGHTGREEN_EX + f"[+] Logged in on {userselected}!\n" + Fore.WHITE)
                         input("Press Enter to begin.")
                         LoginIn = False
+                        actualuser = userselected
                         readbefore(userselected)
                    
                     else:
@@ -523,7 +530,77 @@ def LoggedIn(user):
                 else:
                     print(f"\nClear {Fore.LIGHTRED_EX}bad usage{Fore.WHITE}, clear tool only {Fore.LIGHTCYAN_EX}requires{Fore.WHITE} 1 parameter -> [clear]\n ")
 
+            ## ===========================
+            ##        SHOW ATTACK
+            ## ===========================
+            elif separacion[0] == "showattack":
+                lon = len(separacion)
+                if lon == 2:
 
+                    attackfilename = separacion[1]
+                    attackfilepath = f"./DataInfo/Users/{actualuser}/PathMapperAttacks/{attackfilename}"
+
+
+                    ## CHECK PATH
+                    if separacion[1].endswith(".txt"):
+
+                        ## PATH EXISTS 
+                        if os.path.exists(attackfilepath):
+                            print(f"\nShowing content of {Fore.LIGHTGREEN_EX}{attackfilename}{Fore.WHITE}!\n")
+
+                            with open(attackfilepath, "r") as f:
+                                lineas = f.read()
+
+                            print(lineas)
+                            print("\n")
+
+                        ## PATH DOESNT EXISTS
+                        else:
+                            print(f"{Fore.LIGHTRED_EX}{attackfilename}{Fore.WHITE} file doesn't exist!\n")
+
+                    else:
+                        print(f"\n{Fore.LIGHTRED_EX}{separacion[1]}{Fore.WHITE} is not a .txt file!\n")
+
+            ## ===========================
+            ##      SHOW ALL ATTACKS
+            ## ===========================
+            elif separacion[0].lower() == "showattacks":
+                    lon = len(separacion)
+                    
+                    if lon == 1:
+                        allattackspath = f"./DataInfo/Users/{actualuser}/PathMapperAttacks/"
+                        
+                        ## PATH EXISTS
+                        if os.path.exists(allattackspath):
+
+                            ## LIST OF DIRECTORIES
+                            if os.listdir(allattackspath):
+                                print(f"Showing list of {Fore.LIGHTRED_EX}attacks {Fore.WHITE}made:\n\n")
+                                num = 1
+
+                                for file in os.listdir(allattackspath):
+                                    print(f"{Fore.LIGHTRED_EX}[{num}] {Fore.WHITE}{file}")
+                                    num += 1
+
+                                print("\n")
+
+                            else:
+                                print(f"You haven't done any attack yet. Use {Fore.LIGHTGREEN_EX}pathmapper {Fore.WHITE}to begin.")
+
+                        else:
+                            print(f"You haven't done any attack yet. Use {Fore.LIGHTGREEN_EX}pathmapper {Fore.WHITE}to begin.")
+
+
+                    else:
+                        ## BAD USAGE
+                        print(f"Command {Fore.LIGHTRED_EX}showattacks {Fore.WHITE}bad usage. Use {Fore.LIGHTGREEN_EX}'showattack --help {Fore.WHITE}for more info'\n")
+                    
+
+                        
+                            
+                    
+            
+            
             ## ===========================
             ##        PATH MAPP3R
             ## ===========================
@@ -845,7 +922,7 @@ def LoggedIn(user):
                                                 f.write(f"{url} | {status}\n")
 
                                         print(Fore.LIGHTBLUE_EX + f"\n[?] Attack saved on {attackfilemade}!\n" + Fore.WHITE)
-                                        print(Fore.WHITE + "[?] Enter the command " + Fore.LIGHTGREEN_EX + "openfile <file> " + Fore.WHITE + "to see the file.\n")
+                                        print(Fore.WHITE + "[?] Enter the command " + Fore.LIGHTGREEN_EX + "showattack <file> " + Fore.WHITE + "to see the file.\n")
 
                                 
 
@@ -924,7 +1001,7 @@ def CreateNewUser():
 (_'  '--'\ |  |\  \  |  `---.|  | |  |   |  |   |  `---.      ('  '-'(_.-' \       / |  `---.|  |\  \  
    `-----' `--' '--' `------'`--' `--'   `--'   `------'        `-----'     `-----'  `------'`--' '--'                                         
         """)
-        print(Fore.CYAN + "Max Length: 15" + Fore.WHITE + "\n")
+        print(Fore.CYAN + "Max Length: 15 | Min Length: 3" + Fore.WHITE + "\n")
         usernameinput = input("-> Create your unique username: ")
         userlen = len(usernameinput)
 
@@ -939,7 +1016,7 @@ def CreateNewUser():
         else:
         
         ## CHECK USER LENGHT
-            if userlen < 15 and userlen > 0:
+            if userlen < 15 and userlen >= 3:
             
                 ## CREATE PASS
                 # user false
@@ -989,11 +1066,16 @@ def CreateNewUser():
                         route = r"./DataInfo/Users/" + usernameinput
                         os.makedirs(route)
 
-                        passwordtxtpath = route + "/pass.txt"
+                        passwordtxtpath = route + f"/pass.txt"
+                        selectedroutefile = route + f"/route.txt"
 
                         ## CREATE password.txt
                         with open(passwordtxtpath, "w") as f:
                             f.write(hashedpass.decode())
+
+                        ## CREATE route.txt
+                        with open(selectedroutefile, "w") as f:
+                            f.write("no")
 
                         ## FINISH
                         os.system("clear")
