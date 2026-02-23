@@ -531,9 +531,8 @@ def LoggedIn(user):
 
             elif separacion[0] == "pathmapper":
                 try:
-                    lon = len(comando)
                     comando = action.split()
-
+                    lon = len(comando)
                     if lon <= 5:
                             ## ES EL COMANDO PATHMAPPER
                             ## LEN DE 1 Y 2 | UNVALID
@@ -711,6 +710,8 @@ def LoggedIn(user):
         INITIATING ATTACK
     ===============================
                 """ + Fore.WHITE)
+
+                        print("Please, wait until the attack is done.\n")
 
                         ## PATHS TO OPEN
                         PathMapperPathToOpen = r"./DataInfo/WebPaths/" + FileToUseMapper
