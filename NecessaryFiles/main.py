@@ -437,7 +437,7 @@ def LoggedIn(user):
                     print("\n")
 
                 else:
-                    print(f"{Fore.LIGHTGREEN_EX}Help {Fore.WHITE}bad usage. {Fore.LIGHTGREEN_EX}Help {Fore.WHITE}command only takes 1 parameter [help].") 
+                    print(f"{Fore.LIGHTGREEN_EX}Help {Fore.WHITE}bad usage. {Fore.LIGHTGREEN_EX}Help {Fore.WHITE}command only takes 1 parameter [help].\n") 
 
 
             ## EXIT COMMAND
@@ -450,7 +450,7 @@ def LoggedIn(user):
                     os.system("clear")
                     startconsole()
                 else:
-                    print(f"{Fore.LIGHTRED_EX}Exit {Fore.WHITE}command bad usage. {Fore.LIGHTRED_EX}Only takes 1 parameter [exit].")
+                    print(f"{Fore.LIGHTRED_EX}Exit {Fore.WHITE}command bad usage. {Fore.LIGHTRED_EX}Only takes 1 parameter [exit].\n")
 
 
                                     ## CHECK WEB STATUS
@@ -539,7 +539,7 @@ def LoggedIn(user):
                             print(Fore.RED + f"[!] An error has occurred: \n{Fore.WHITE}{err}\n")
 
                     else:
-                        print(f"Command {separacion[0]} bad usage. Use {Fore.LIGHTCYAN_EX}webstatus --help {Fore.WHITE}for more info!")
+                        print(f"Command {separacion[0]} bad usage. Use {Fore.LIGHTCYAN_EX}webstatus --help {Fore.WHITE}for more info!\n")
 
 
             ## COMMANDO CLEAR
@@ -668,6 +668,9 @@ def LoggedIn(user):
 
                         else:
                             print(f"No files found!\n")
+
+                else:
+                    print(f"Command {Fore.LIGHTRED_EX}delattacks{Fore.WHITE} bad usage. Use " + Fore.LIGHTCYAN_EX + f"delattacks --help " + Fore.WHITE + "for more info!\n")
                  
             
             
@@ -814,7 +817,7 @@ def LoggedIn(user):
 
                 if not finishedpathmapper and badusagepathmapper == True:
                     ## BAD USAGE
-                    print(f"pathmapper bad usage. Use " + Fore.LIGHTCYAN_EX + f"pathmapper --help " + Fore.WHITE + "for more info!")
+                    print(f"pathmapper bad usage. Use " + Fore.LIGHTCYAN_EX + f"pathmapper --help " + Fore.WHITE + "for more info!\n")
                     finishedpathmapper = False
                     onlyopenpaths = False
                     savepaths = False
