@@ -23,7 +23,7 @@ LoginOptions = {
 }
 
 # commands
-commands = ["help", "pathmapper", "exit", "clear"]
+commands = ["help", "pathmapper", "exit", "clear", "showattack", "showattacks"]
 
 
 
@@ -32,7 +32,10 @@ helpcommand = {
         "PathMapper": "Searchs hidden paths on a web, such as /index.html, /admin.html.",
         "exit": "Exits the program. (Easy no?)",
         "webstatus": "Show's the status of a web [200, 403. . .]",
-        "clear": "Clear's completely the screen."
+        "clear": "Clear's completely the screen.",
+        "showattack": "Show's an specific saved previous attack made with pathmapper on the screen.",
+        "clear": "Show's every .txt saved by pathmapper on the screen.",
+        "delattacks": "Deletes every attack made before. (Requires confirmation)"
     }
 
 }
@@ -270,33 +273,45 @@ def login():
                     with open(PassPathCheck, "r") as f:
                         hashedpass = f.read().strip()
 
-                    ## CHECK PASS
-                    if bcrypt.checkpw(passSelected.encode("utf-8"), hashedpass.encode("utf-8")):
-                        
-                        # RIGHT PASS
-                        os.system("clear")
-                        print(Fore.LIGHTGREEN_EX + f"[+] Logged in on {userselected}!\n" + Fore.WHITE)
-                        input("Press Enter to begin.")
-                        LoginIn = False
-                        actualuser = userselected
-                        readbefore(userselected)
-                   
+
+                    if passSelected != "":
+
+                        ## CHECK PASS
+                        if bcrypt.checkpw(passSelected.encode("utf-8"), hashedpass.encode("utf-8")):
+                            
+                            # RIGHT PASS
+                            os.system("clear")
+                            print(Fore.LIGHTGREEN_EX + f"[+] Logged in on {userselected}!\n" + Fore.WHITE)
+                            input("Press Enter to begin.")
+                            LoginIn = False
+                            actualuser = userselected
+                            readbefore(userselected)
+                    
+                        else:
+                            # WRONG PASS
+                            os.system("clear")
+                            print(Fore.LIGHTRED_EX + """
+    (`\ .-') /`   ('-. .-. .-')           ('-.  ) (`-.       _ (`-.                                  .-') _    
+    `.( OO ),' _(  OO)\  ( OO )        _(  OO)  ( OO ).    ( (OO  )                                (  OO) )   
+    ,--./  .--.  (,------.;-----.\       (,------.(_/.  \_)-._.`     \ ,--.      .-'),-----.   ,-.-') /     '._  
+    |      |  |   |  .---'| .-.  |        |  .---' \  `.'  /(__...--'' |  |.-') ( OO'  .-.  '  |  |OO)|'--...__) 
+    |  |   |  |,  |  |    | '-' /_)       |  |      \     /\ |  /  | | |  | OO )/   |  | |  |  |  |  \'--.  .--' 
+    |  |.'.|  |_)(|  '--. | .-. `.       (|  '--.    \   \ | |  |_.' | |  |`-' |\_) |  |\|  |  |  |(_/   |  |    
+    |         |   |  .--' | |  \  |       |  .--'   .'    \_)|  .___.'(|  '---.'  \ |  | |  | ,|  |_.'   |  |    
+    |   ,'.   |   |  `---.| '--'  /       |  `---. /  .'.  \ |  |      |      |    `'  '-'  '(_|  |      |  |    
+    '--'   '--'   `------'`------'        `------''--'   '--'`--'      `------'      `-----'   `--'      `--'    
+    \n""")
+                            print(Fore.RED + "[!] Wrong password.\n")
+                            input(Fore.WHITE + f"Press Enter to return.")
+
                     else:
-                        # WRONG PASS
+                        ## EMPTY PARAMETER
                         os.system("clear")
-                        print(Fore.LIGHTRED_EX + """
-  (`\ .-') /`   ('-. .-. .-')           ('-.  ) (`-.       _ (`-.                                  .-') _    
-   `.( OO ),' _(  OO)\  ( OO )        _(  OO)  ( OO ).    ( (OO  )                                (  OO) )   
-,--./  .--.  (,------.;-----.\       (,------.(_/.  \_)-._.`     \ ,--.      .-'),-----.   ,-.-') /     '._  
-|      |  |   |  .---'| .-.  |        |  .---' \  `.'  /(__...--'' |  |.-') ( OO'  .-.  '  |  |OO)|'--...__) 
-|  |   |  |,  |  |    | '-' /_)       |  |      \     /\ |  /  | | |  | OO )/   |  | |  |  |  |  \'--.  .--' 
-|  |.'.|  |_)(|  '--. | .-. `.       (|  '--.    \   \ | |  |_.' | |  |`-' |\_) |  |\|  |  |  |(_/   |  |    
-|         |   |  .--' | |  \  |       |  .--'   .'    \_)|  .___.'(|  '---.'  \ |  | |  | ,|  |_.'   |  |    
-|   ,'.   |   |  `---.| '--'  /       |  `---. /  .'.  \ |  |      |      |    `'  '-'  '(_|  |      |  |    
-'--'   '--'   `------'`------'        `------''--'   '--'`--'      `------'      `-----'   `--'      `--'    
-\n""")
-                        print(Fore.RED + "[!] Wrong password.\n")
-                        input(Fore.WHITE + f"Press Enter to return.")
+                        print(Fore.LIGHTRED_EX + f"[!] You haven't entered a parameter.\n")
+                        print(Fore.LIGHTYELLOW_EX + f"[?] Returning.\n")
+                        input(Fore.WHITE + f"Press enter to continue.")
+                        LoginIn = False
+
 
                             
                 else:
@@ -331,6 +346,7 @@ def login():
             print(Fore.LIGHTRED_EX + f"[!] You haven't entered a parameter.\n")
             print(Fore.LIGHTYELLOW_EX + f"[?] Returning.\n")
             input(Fore.WHITE + f"Press enter to continue.")
+            LoginIn = False
                 
 
         
@@ -376,6 +392,11 @@ def LoggedIn(user):
     
     ## CONSOLE LOOP
     os.system("clear")
+    print(f"""{Fore.LIGHTYELLOW_EX}
+=============================
+        C O N S O L E
+============================={Fore.WHITE}
+""")
 
     ## PRINT USER AND TIME
     while loggedinauser:
@@ -597,8 +618,57 @@ def LoggedIn(user):
                     
 
                         
-                            
+            
+            ## ===========================
+            ##        DEL ATTACKS
+            ## ===========================
+            elif separacion[0] == "delattacks":
+                lon = len(separacion)
+                if lon == 1:
+                    ## DEL ATTACKS
+                    pathtodel = f"./DataInfo/Users/{actualuser}/PathMapperAttacks/"
                     
+                    ## PATH EXISTS
+                    if os.path.exists(pathtodel):
+                        print(f"\nListing all files to remove: \n")
+                       
+                        ## LIST ALL FILES
+                        num = 1
+                        filestodelete = []
+
+                        for file in os.listdir(pathtodel):
+                            if file != "numberofattacks.txt":
+                                filestodelete.append(file)
+
+                        
+                        if len(pathtodel) > 1:
+                            print(f"""{Fore.LIGHTYELLOW_EX}
+===========================
+      DELETING FILES                                  
+==========================={Fore.WHITE}
+""")
+                            ## CONFIRMATION TO DELETE
+                            for file in filestodelete:
+                                print(f"{Fore.LIGHTYELLOW_EX}[{num}]{Fore.WHITE} ->{Fore.LIGHTRED_EX} {file}{Fore.WHITE}")
+                                num += 1
+                                    
+
+                            confirmation = input(f"\nAre you sure that you want to delete {Fore.LIGHTRED_EX}all{Fore.WHITE} files? (y/n): {Fore.LIGHTYELLOW_EX}")
+                            print(Fore.WHITE)
+
+                            if confirmation.lower() == "y" or confirmation.lower() == "yes" or confirmation.lower() == "ye":
+                                for file in os.listdir(pathtodel):
+                                    deletefile = f"./DataInfo/Users/{actualuser}/PathMapperAttacks/{file}"
+
+                                    if file in filestodelete and file in filestodelete:
+                                        print(f"{Fore.LIGHTRED_EX}[!] {Fore.WHITE}Removed {Fore.LIGHTYELLOW_EX}{file}{Fore.WHITE}!")
+                                        os.remove(deletefile)
+
+                                print("\n")
+
+                        else:
+                            print(f"No files found!\n")
+                 
             
             
             ## ===========================
