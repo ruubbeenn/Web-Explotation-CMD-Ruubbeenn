@@ -255,90 +255,98 @@ def login():
         userselected = input("> User: " + Fore.LIGHTGREEN_EX)
         seepath = r"./DataInfo/Users/" + userselected
 
-        def checkuserselected():
-            user = userselected
-            return user
-
         # CHECK IF USERSELECTED IS NOT EMPTY.
         if not userselected == "":
+
+            lon = len(userselected)
+
+            if lon == 1:
             
-            if os.path.exists(seepath):
-                ## PASS
-                passSelected = getpass.getpass(Fore.WHITE + "> Password: " + Fore.LIGHTGREEN_EX)
+                if os.path.exists(seepath):
+                    ## PASS
+                    passSelected = getpass.getpass(Fore.WHITE + "> Password: " + Fore.LIGHTGREEN_EX)
 
-                PassPathCheck = seepath + f"/pass.txt"
-                if os.path.exists(PassPathCheck):
+                    PassPathCheck = seepath + f"/pass.txt"
+                    if os.path.exists(PassPathCheck):
 
-                    ## READ HASHED PASS
-                    with open(PassPathCheck, "r") as f:
-                        hashedpass = f.read().strip()
+                        ## READ HASHED PASS
+                        with open(PassPathCheck, "r") as f:
+                            hashedpass = f.read().strip()
 
 
-                    if passSelected != "":
+                        if passSelected != "":
 
-                        ## CHECK PASS
-                        if bcrypt.checkpw(passSelected.encode("utf-8"), hashedpass.encode("utf-8")):
-                            
-                            # RIGHT PASS
-                            os.system("clear")
-                            print(Fore.LIGHTGREEN_EX + f"[+] Logged in on {userselected}!\n" + Fore.WHITE)
-                            input("Press Enter to begin.")
-                            LoginIn = False
-                            actualuser = userselected
-                            readbefore(userselected)
-                    
+                            ## CHECK PASS
+                            if bcrypt.checkpw(passSelected.encode("utf-8"), hashedpass.encode("utf-8")):
+                                
+                                # RIGHT PASS
+                                os.system("clear")
+                                print(Fore.LIGHTGREEN_EX + f"[+] Logged in on {userselected}!\n" + Fore.WHITE)
+                                input("Press Enter to begin.")
+                                LoginIn = False
+                                actualuser = userselected
+                                readbefore(userselected)
+                        
+                            else:
+                                # WRONG PASS
+                                os.system("clear")
+                                print(Fore.LIGHTRED_EX + """
+        (`\ .-') /`   ('-. .-. .-')           ('-.  ) (`-.       _ (`-.                                  .-') _    
+        `.( OO ),' _(  OO)\  ( OO )        _(  OO)  ( OO ).    ( (OO  )                                (  OO) )   
+        ,--./  .--.  (,------.;-----.\       (,------.(_/.  \_)-._.`     \ ,--.      .-'),-----.   ,-.-') /     '._  
+        |      |  |   |  .---'| .-.  |        |  .---' \  `.'  /(__...--'' |  |.-') ( OO'  .-.  '  |  |OO)|'--...__) 
+        |  |   |  |,  |  |    | '-' /_)       |  |      \     /\ |  /  | | |  | OO )/   |  | |  |  |  |  \'--.  .--' 
+        |  |.'.|  |_)(|  '--. | .-. `.       (|  '--.    \   \ | |  |_.' | |  |`-' |\_) |  |\|  |  |  |(_/   |  |    
+        |         |   |  .--' | |  \  |       |  .--'   .'    \_)|  .___.'(|  '---.'  \ |  | |  | ,|  |_.'   |  |    
+        |   ,'.   |   |  `---.| '--'  /       |  `---. /  .'.  \ |  |      |      |    `'  '-'  '(_|  |      |  |    
+        '--'   '--'   `------'`------'        `------''--'   '--'`--'      `------'      `-----'   `--'      `--'    
+        \n""")
+                                print(Fore.RED + "[!] Wrong password.\n")
+                                input(Fore.WHITE + f"Press Enter to return.")
+
                         else:
-                            # WRONG PASS
+                            ## EMPTY PARAMETER
                             os.system("clear")
-                            print(Fore.LIGHTRED_EX + """
-    (`\ .-') /`   ('-. .-. .-')           ('-.  ) (`-.       _ (`-.                                  .-') _    
-    `.( OO ),' _(  OO)\  ( OO )        _(  OO)  ( OO ).    ( (OO  )                                (  OO) )   
-    ,--./  .--.  (,------.;-----.\       (,------.(_/.  \_)-._.`     \ ,--.      .-'),-----.   ,-.-') /     '._  
-    |      |  |   |  .---'| .-.  |        |  .---' \  `.'  /(__...--'' |  |.-') ( OO'  .-.  '  |  |OO)|'--...__) 
-    |  |   |  |,  |  |    | '-' /_)       |  |      \     /\ |  /  | | |  | OO )/   |  | |  |  |  |  \'--.  .--' 
-    |  |.'.|  |_)(|  '--. | .-. `.       (|  '--.    \   \ | |  |_.' | |  |`-' |\_) |  |\|  |  |  |(_/   |  |    
-    |         |   |  .--' | |  \  |       |  .--'   .'    \_)|  .___.'(|  '---.'  \ |  | |  | ,|  |_.'   |  |    
-    |   ,'.   |   |  `---.| '--'  /       |  `---. /  .'.  \ |  |      |      |    `'  '-'  '(_|  |      |  |    
-    '--'   '--'   `------'`------'        `------''--'   '--'`--'      `------'      `-----'   `--'      `--'    
-    \n""")
-                            print(Fore.RED + "[!] Wrong password.\n")
-                            input(Fore.WHITE + f"Press Enter to return.")
+                            print(Fore.LIGHTRED_EX + f"[!] You haven't entered a parameter.\n")
+                            print(Fore.LIGHTYELLOW_EX + f"[?] Returning.\n")
+                            input(Fore.WHITE + f"Press enter to continue.")
+                            LoginIn = False
 
+
+                                
                     else:
-                        ## EMPTY PARAMETER
+                        # FILE DISSAPEARED & REMOVED
                         os.system("clear")
-                        print(Fore.LIGHTRED_EX + f"[!] You haven't entered a parameter.\n")
-                        print(Fore.LIGHTYELLOW_EX + f"[?] Returning.\n")
-                        input(Fore.WHITE + f"Press enter to continue.")
-                        LoginIn = False
+                        print(Fore.LIGHTRED_EX + f"[!] Internal error has occurred.\n")
+                        print(f"[?] You " + Fore.LIGHTYELLOW_EX + " must " + Fore.WHITE + "solve it to continue.\n")
+                        SolveAction = input(Fore.WHITE + f"Do you want to solve it? (y/n): ")
 
+                        if SolveAction.lower() == "y" or SolveAction.lower() == "yes":
+                            os.system("clear")
+                            os.system("python3 setup.py")
+                        
+                        else:
+                            os.system("clear")
+                            print(Fore.LIGHTRED_EX + "[!] Exiting.\n")
+                            time.sleep(1)
+                            os.system("clear")
+                            sys.exit()
 
-                            
+                
                 else:
-                    # FILE DISSAPEARED & REMOVED
+                    # NO VALID! | DOESN'T EXIST
                     os.system("clear")
-                    print(Fore.LIGHTRED_EX + f"[!] Internal error has occurred.\n")
-                    print(f"[?] You " + Fore.LIGHTYELLOW_EX + " must " + Fore.WHITE + "solve it to continue.\n")
-                    SolveAction = input(Fore.WHITE + f"Do you want to solve it? (y/n): ")
+                    print(Fore.LIGHTRED_EX + f"[!] You have entered a wrong username.\n")
+                    print(Fore.LIGHTYELLOW_EX + f"[?] Your parameter: {userselected}\n")
+                    input(Fore.WHITE + f"Press enter to continue.")
 
-                    if SolveAction.lower() == "y" or SolveAction.lower() == "yes":
-                        os.system("clear")
-                        os.system("python3 setup.py")
-                    
-                    else:
-                        os.system("clear")
-                        print(Fore.LIGHTRED_EX + "[!] Exiting.\n")
-                        time.sleep(1)
-                        os.system("clear")
-                        sys.exit()
-
-            
             else:
-                # NO VALID! | DOESN'T EXIST
+                ## EMPTY PARAMETER
                 os.system("clear")
-                print(Fore.LIGHTRED_EX + f"[!] You have entered a wrong username.\n")
-                print(Fore.LIGHTYELLOW_EX + f"[?] Your parameter: {userselected}\n")
+                print(Fore.LIGHTRED_EX + f"[!] You can't enter 2 parameters.\n")
+                print(Fore.LIGHTYELLOW_EX + f"[?] Returning.\n")
                 input(Fore.WHITE + f"Press enter to continue.")
+                LoginIn = False            
         
         else:
             ## EMPTY PARAMETER
@@ -668,6 +676,9 @@ def LoggedIn(user):
 
                         else:
                             print(f"No files found!\n")
+
+                    else:
+                        print(f"No files found!\n")
 
                 else:
                     print(f"Command {Fore.LIGHTRED_EX}delattacks{Fore.WHITE} bad usage. Use " + Fore.LIGHTCYAN_EX + f"delattacks --help " + Fore.WHITE + "for more info!\n")
