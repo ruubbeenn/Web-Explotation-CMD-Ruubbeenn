@@ -21,9 +21,6 @@ def check_modules():
         except ModuleNotFoundError as module:
             requiredmodules.append(module)
 
-    print(requiredmodules)
-    time.sleep(10)
-
     if requiredmodules:
         for i in requiredmodules:
             print(f"Module {i} not installed\n")
@@ -33,9 +30,6 @@ def check_modules():
                 time.sleep(1)
             except Exception as err:
                 print(f"Error trying to download {i}: {err}")
-
-    print("fin.")
-    time.sleep(100)
         
 check_modules()
         
